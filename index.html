@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>会議背景メーカー</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="search-wrap" role="search">
+      <svg class="icon"><use href="assets/icons.svg#search"></use></svg>
+      <input id="searchInput" type="text" inputmode="search" autocomplete="off"
+             placeholder="Serch Your Name" aria-label="Serch Your Name" />
+      <ul id="suggestList" class="suggest-list" role="listbox" aria-label="候補"></ul>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- Editable user panel -->
+    <section class="user-panel" aria-label="ユーザー情報編集">
+      <div class="row">
+        <label>会社名</label>
+        <input id="companyField" type="text" maxlength="80" />
+      </div>
+      <div class="row">
+        <label>氏名（日本語）</label>
+        <input id="jpNameField" type="text" maxlength="80" />
+      </div>
+      <div class="row">
+        <label>氏名（英語）</label>
+        <input id="enNameField" type="text" maxlength="80" />
+      </div>
+      <div class="row">
+        <label>役職</label>
+        <input id="titleField" type="text" maxlength="80" />
+      </div>
+      <div class="row">
+        <label>メール</label>
+        <input id="emailField" type="email" maxlength="120" />
+      </div>
+
+      <button id="applyBtn" class="btn icon-btn" title="画像に反映" aria-label="画像に反映">
+        <svg class="icon"><use href="assets/icons.svg#refresh"></use></svg>
+      </button>
+    </section>
+
+    <!-- Background gallery -->
+    <section class="gallery" aria-label="背景ギャラリー" id="gallery">
+      <!-- Upload tile -->
+      <label class="card upload-card" title="新しい背景をアップロード">
+        <input id="uploadInput" type="file" accept="image/*" hidden />
+        <div class="upload-inner">
+          <svg class="icon xl"><use href="assets/icons.svg#upload"></use></svg>
+          <span>Upload</span>
+        </div>
+      </label>
+      <!-- Cards are injected here -->
+    </section>
+
+    <!-- Hidden canvas for rendering -->
+    <canvas id="renderCanvas" class="hidden" width="1920" height="1080"></canvas>
+  </main>
+
+  <!-- Google APIs (optional; only needed if you configure drive/sheets live access) -->
+  <!-- <script src="https://apis.google.com/js/api.js"></script> -->
+
+  <script src="js/canvasRenderer.js"></script>
+  <script src="js/google.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
