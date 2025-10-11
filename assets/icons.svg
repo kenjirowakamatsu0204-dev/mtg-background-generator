@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="search" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M10 2a8 8 0 105.293 14.293l4.207 4.207 1.414-1.414-4.207-4.207A8 8 0 0010 2zm0 2a6 6 0 110 12A6 6 0 0110 4z"/>
+  </symbol>
+  <symbol id="download" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M11 3h2v9h3l-4 4-4-4h3V3zM5 19h14v2H5z"/>
+  </symbol>
+  <symbol id="upload" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M11 21h2v-9h3l-4-4-4 4h3v9zM5 3h14v2H5z"/>
+  </symbol>
+  <symbol id="refresh" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 6V3l4 4-4 4V8a4 4 0 104 4h2a6 6 0 11-6-6z"/>
+  </symbol>
+</svg>
