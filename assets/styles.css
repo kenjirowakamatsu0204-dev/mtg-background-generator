@@ -1,11 +1,11 @@
 :root{
   --bg:#0b0c10;
-  --panel:#ffffff;                /* ← ユーザーパネル 白 */
+  --panel:#ffffff;                /* ユーザーパネル：白 */
   --card:#fff;
   --muted:#8a96a3;
   --ring:#7c3aed;
   --accent:#2563eb;
-  --pendo-pink:#F94877;           /* ← Pendoピンク */
+  --pendo-pink:#F94877;           /* Pendoピンク */
   --ink:#0f172a;                  /* 標準テキスト色（黒系） */
   --shadow: 0 10px 30px rgba(0,0,0,.12);
 }
@@ -46,7 +46,7 @@ body{
   max-width:1160px; margin:20px auto 80px; padding:0 20px; display:block;
 }
 
-/* ========== ユーザーパネル ========== */
+/* ========== ユーザーパネル（初期は非表示） ========== */
 .user-panel{
   position:relative;                     /* 右下ボタンの基準 */
   background:var(--panel);               /* 白背景 */
@@ -56,23 +56,24 @@ body{
   box-shadow:var(--shadow);
   margin-bottom:18px;
 }
+.user-panel.hidden{ display:none; }
 
-/* コンパクトな縦積み：縦幅を約半分に */
+/* コンパクトな縦積み：縦幅を圧縮 */
 .user-panel .rows{
   display:flex;
   flex-direction:column;
-  gap:8px;                               /* 以前の ~14px → 8px に圧縮 */
+  gap:8px;                               /* コンパクト */
   margin-bottom:0;
 }
 
 /* ラベルなし・枠線なし・高さコンパクト（44px） */
 .user-panel .field{
   width:100%;
-  height:44px;                           /* ← コンパクト */
+  height:44px;
   padding:10px 12px;
-  border:none;                           /* 枠線なし */
+  border:none;
   border-radius:10px;
-  background:#f3f6fb;                    /* 白地に薄いグレーで段差 */
+  background:#f3f6fb;
   color:var(--ink);
   font-size:16px;
   box-shadow:none;
@@ -82,7 +83,7 @@ body{
 /* フォーカスでテキスト色をPendoピンクに、軽いフォーカスリング */
 .user-panel .field:focus{
   outline:none;
-  color:var(--pendo-pink);               /* ← フォーカス時に色変化 */
+  color:var(--pendo-pink);
   background:#fff;
   box-shadow:0 0 0 3px rgba(249,72,119,.18);
 }
@@ -96,12 +97,11 @@ body{
 }
 .btn .icon{ width:18px; height:18px }
 
-/* Pendoピンク版 */
 .btn-pendo{
-  position:absolute;                     /* 右下に固定 */
+  position:absolute;
   right:14px;
-  bottom:14px;                           /* パネル内右下 */
-  height:44px;                           /* フィールドと同じ高さで“同じ行”に見える */
+  bottom:14px;
+  height:44px;                           /* フィールドと同じ高さで“同じ行”に見せる */
   min-width:44px;
   background:var(--pendo-pink);
   color:#fff;
@@ -120,6 +120,28 @@ body{
   border:1px solid #e5eaf1; box-shadow:var(--shadow);
 }
 .card img{ width:100%; height:100%; object-fit:cover; display:block }
+
+/* ← 追加：カード左上のプレビュー用オーバーレイ */
+.card .overlay{
+  position:absolute; top:10px; left:10px;
+  max-width:80%;
+  background:rgba(255,255,255,.85);      /* 半透明の白。背景に馴染む */
+  border-radius:10px;
+  padding:8px 10px;
+  box-shadow:0 4px 10px rgba(0,0,0,.12);
+  display:none;                           /* 初期は非表示。選択後に表示 */
+}
+.card .overlay.show{ display:block; }
+.card .overlay .ov-line{
+  font-size:12px; line-height:1.25; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.card .overlay .company{ font-weight:600; }
+.card .overlay .jpName{ font-weight:700; }
+.card .overlay .enName{ font-weight:600; color:#1f2937; }
+.card .overlay .title { color:#374151; }
+.card .overlay .email { color:#2563eb; }
+
+/* ダウンロードボタン */
 .card .dl{
   position:absolute; right:12px; bottom:12px; width:48px; height:48px; display:grid; place-items:center; border-radius:12px;
   background:#ffffffde; border:1px solid #e5eaf1; cursor:pointer; transition:transform .06s ease, background .2s ease, box-shadow .2s ease;
