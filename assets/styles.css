@@ -1,13 +1,9 @@
 :root{
-  --bg:#0b0c10;
-  --panel:#ffffff;                /* ユーザーパネル：白 */
-  --card:#fff;
-  --muted:#8a96a3;
+  --panel:#ffffff;
   --ring:#7c3aed;
-  --accent:#2563eb;
-  --pendo-pink:#F94877;           /* Pendoピンク */
-  --ink:#0f172a;                  /* 標準テキスト色（黒系） */
-  --shadow: 0 10px 30px rgba(0,0,0,.12);
+  --pendo-pink:#F94877;
+  --ink:#0f172a;
+  --shadow:0 10px 30px rgba(0,0,0,.12);
 }
 
 *{box-sizing:border-box}
@@ -17,7 +13,7 @@ body{
   font:16px/1.45 "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
 }
 
-/* ========== Header (検索) ========== */
+/* ===== Header (検索) ===== */
 .app-header{
   position:sticky; top:0; z-index:20; backdrop-filter:saturate(150%) blur(6px);
   background:rgba(246,247,251,.85); padding:16px 24px; border-bottom:1px solid #eaeef4;
@@ -38,90 +34,40 @@ body{
 }
 .suggest-list.show{ display:block }
 .suggest-item{ padding:10px 12px; display:flex; gap:12px; align-items:center; border-radius:10px; cursor:pointer }
-.suggest-item:hover, .suggest-item[aria-selected="true"]{ background:#f0f7ff; outline:1px solid #dbeafe }
+.suggest-item:hover{ background:#f0f7ff; outline:1px solid #dbeafe }
 .badge{width:28px;height:28px;border-radius:999px;background:#e8eef7;color:#334155;display:grid;place-items:center;font-weight:700}
 
-/* ========== Main 全体：縦並び固定 ========== */
-.app-main{
-  max-width:1160px; margin:20px auto 80px; padding:0 20px; display:block;
-}
+/* ===== Main 縦並び ===== */
+.app-main{ max-width:1160px; margin:20px auto 80px; padding:0 20px; display:block; }
 
-/* ========== ユーザーパネル（初期は非表示） ========== */
+/* ===== ユーザーパネル（初期は非表示） ===== */
 .user-panel{
-  position:relative;                     /* 右下ボタンの基準 */
-  background:var(--panel);               /* 白背景 */
-  color:var(--ink);                      /* 黒文字 */
-  border-radius:16px;
-  padding:14px 14px 70px;                /* 下はボタン分だけ多め */
-  box-shadow:var(--shadow);
-  margin-bottom:18px;
+  position:relative; background:var(--panel); color:var(--ink);
+  border-radius:16px; padding:14px 14px 70px; box-shadow:var(--shadow); margin-bottom:18px;
 }
 .user-panel.hidden{ display:none; }
+.user-panel .rows{ display:flex; flex-direction:column; gap:8px; margin-bottom:0; }
 
-/* コンパクトな縦積み：縦幅を圧縮 */
-.user-panel .rows{
-  display:flex;
-  flex-direction:column;
-  gap:8px;                               /* コンパクト */
-  margin-bottom:0;
-}
-
-/* ラベルなし・枠線なし・高さコンパクト（44px）
-   背景はパネルと同色（白） */
+/* 入力（背景はパネルと同色／ホバーでピンク＆cursor:text／フォーカスでリング） */
 .user-panel .field{
-  width:100%;
-  height:44px;
-  padding:10px 12px;
-  border:none;
-  border-radius:10px;
-  background:#ffffff;                    /* ← パネルと同色 */
-  color:var(--ink);
-  font-size:16px;
-  box-shadow:none;
+  width:100%; height:44px; padding:10px 12px; border:none; border-radius:10px;
+  background:#ffffff; color:var(--ink); font-size:16px; box-shadow:none;
   transition:color .12s ease, box-shadow .12s ease, background .12s ease;
 }
+.user-panel .field:hover{ color:var(--pendo-pink); cursor:text; }
+.user-panel .field:focus{ outline:none; color:var(--pendo-pink); background:#ffffff; box-shadow:0 0 0 3px rgba(249,72,119,.18); }
 
-/* ホバーで Pendo ピンク＆カーソルを text に */
-.user-panel .field:hover{
-  color:var(--pendo-pink);
-  cursor:text;
-}
-
-/* フォーカス時もピンク、背景は白のまま、リング軽め */
-.user-panel .field:focus{
-  outline:none;
-  color:var(--pendo-pink);
-  background:#ffffff;
-  box-shadow:0 0 0 3px rgba(249,72,119,.18);
-}
-
-/* ========== 更新ボタン（右下固定・Pendoピンク） ========== */
-.btn.icon-btn{
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  border-radius:12px; padding:10px 14px; cursor:pointer;
-  transition:transform .05s ease, filter .2s ease, box-shadow .2s ease, background .2s ease;
-  border:0;
-  font-family:"Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-}
+/* 更新ボタン（右下固定・Pendoピンク） */
+.btn.icon-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:12px; padding:10px 14px; border:0; cursor:pointer; transition:transform .05s ease, filter .2s ease, box-shadow .2s ease, background .2s ease; font-family:"Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;}
 .btn .icon{ width:18px; height:18px }
-
-.btn-pendo{
-  position:absolute;
-  right:14px;
-  bottom:14px;
-  height:44px;                           /* フィールドと同じ高さで“同じ行”に見せる */
-  min-width:44px;
-  background:var(--pendo-pink);
-  color:#fff;
-  box-shadow:0 8px 16px rgba(249,72,119,.25);
-}
+.btn-pendo{ position:absolute; right:14px; bottom:14px; height:44px; min-width:44px; background:var(--pendo-pink); color:#fff; box-shadow:0 8px 16px rgba(249,72,119,.25); }
 .btn-pendo:hover{ filter:brightness(1.05); box-shadow:0 10px 22px rgba(249,72,119,.35) }
 .btn-pendo:active{ transform:translateY(1px) }
 
-/* ========== ギャラリー ========== */
+/* ===== ギャラリー ===== */
 .gallery{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; align-content:start }
-@media (max-width: 900px){ .gallery{ grid-template-columns:repeat(2, 1fr) } }
-@media (max-width: 560px){ .gallery{ grid-template-columns:1fr } }
+@media (max-width:900px){ .gallery{ grid-template-columns:repeat(2, 1fr) } }
+@media (max-width:560px){ .gallery{ grid-template-columns:1fr } }
 
 .card{
   position:relative; aspect-ratio:16/9; background:#fff; border-radius:14px; overflow:hidden;
@@ -129,32 +75,23 @@ body{
 }
 .card img{ width:100%; height:100%; object-fit:cover; display:block }
 
-/* カード左上のプレビュー用オーバーレイ（黒半透明＋白文字）
-   角をぼかして周囲へフェードする雰囲気は box-shadow で補助 */
+/* プレビュー：左半分に黒グラデーション＋白文字（箱なし） */
 .card .overlay{
-  position:absolute; top:10px; left:10px;
-  max-width:80%;
-  background:rgba(0,0,0,.6);            /* ← 黒半透明 */
-  color:#ffffff;                         /* ← 白文字 */
-  border-radius:10px;
-  padding:8px 10px;
-  box-shadow:0 8px 20px rgba(0,0,0,.2);  /* ← 境界を柔らかく */
-  display:none;
+  position:absolute; inset:0; pointer-events:none; display:none; /* 初期非表示 */
   font-family:"Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
 }
 .card .overlay.show{ display:block; }
-.card .overlay .ov-line{
-  font-size:12px;
-  line-height:1.15;                      /* ← 行間を詰める */
-  color:#ffffff;                         /* すべて白文字 */
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  text-shadow:none;                      /* ← 文字影なし */
+.card .overlay::before{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(to right, rgba(0,0,0,.55) 0%, rgba(0,0,0,.35) 45%, rgba(0,0,0,0) 70%); /* 左半分を中心にフェード */
 }
-.card .overlay .company{ font-weight:600; }
-.card .overlay .jpName{ font-weight:700; }
-.card .overlay .enName{ font-weight:600; }
-.card .overlay .title { opacity:.95; }
-.card .overlay .email { opacity:.95; }
+.card .ov-wrap{
+  position:absolute; left:24px; top:24px; right:24px; color:#fff;
+}
+.card .ov-line{ font-size:14px; line-height:1.2; margin:0 0 6px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:none; }
+.card .company{ font-weight:600; font-size:16px; margin-bottom:10px; }
+.card .jpName{ font-weight:700; font-size:28px; margin-bottom:8px; }
+.card .title  { font-weight:500; font-size:14px; opacity:.95; }
 
 /* ダウンロードボタン */
 .card .dl{
@@ -173,4 +110,3 @@ body{
 
 /* Utility */
 .hidden{ display:none }
-.visually-hidden{ position:absolute; inset:0; width:1px; height:1px; clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap }
