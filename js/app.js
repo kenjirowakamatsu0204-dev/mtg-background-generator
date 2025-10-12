@@ -1,5 +1,5 @@
 (async function(){
-  const userPanelEl = document.querySelector('.user-panel'); // 初期は hidden
+  const userPanelEl = document.querySelector('.user-panel'); // 初期は hidden + display:none
   const galleryEl = document.getElementById('gallery');
   const suggestEl = document.getElementById('suggestList');
   const searchEl  = document.getElementById('searchInput');
@@ -20,7 +20,7 @@
     inp.addEventListener('input', (e)=>{ e.target.value = e.target.value.replace(/[\r\n]+/g,' '); });
   });
 
-  // データ取得（Drive/Sheets。モックでもOK）
+  // --- データ取得（Drive/Sheets）。モックでもOK ---
   const [images, people] = await Promise.allSettled([
     GoogleAPI.listDriveImages(), GoogleAPI.fetchPeopleFromSheet()
   ]).then(([a,b])=>[a.value||[], b.value||[]]);
@@ -113,14 +113,20 @@
   }
 
   // ========= Person selection =========
+  function revealUserPanelOnce(){
+    if(!hasShownPanel){
+      userPanelEl.classList.remove('hidden');
+      userPanelEl.style.display = '';       // ← display:none を解除
+      userPanelEl.setAttribute('aria-hidden', 'false');
+      hasShownPanel = true;
+    }
+  }
+
   function choosePerson(p){
     selectedPerson = p;
 
-    // 初回ヒット時にユーザーパネルを表示
-    if(!hasShownPanel){
-      userPanelEl.classList.remove('hidden');
-      hasShownPanel = true;
-    }
+    // 初回ヒット時にユーザーパネルを表示（確実に）
+    revealUserPanelOnce();
 
     // 値を反映
     fields.company.value = p.company||'';
@@ -154,7 +160,7 @@
 
     // preview overlay (左上)
     const overlay = document.createElement('div');
-    overlay.className = 'overlay'; // .show は選択時に付与
+    overlay.className = 'overlay'; // .show は選択時/生成時に付与
 
     // download button
     const dl = document.createElement('button');
@@ -172,10 +178,19 @@
     card.appendChild(img);
     card.appendChild(overlay);
     card.appendChild(dl);
-    galleryEl.appendChild(card);
 
+    // 先に append してから管理配列に登録
+    galleryEl.appendChild(card);
     const record = { id, imgEl: img, overlay, card };
     cards.push(record);
+
+    // ★ ここが修正ポイント：ユーザーが既に選択されている場合は、生成時に即反映
+    if(selectedPerson){
+      const values = getFieldValues();
+      setOverlayContent(overlay, values);
+      overlay.classList.add('show');
+    }
+
     return record;
   }
 
@@ -188,14 +203,13 @@
     const file = ev.target.files?.[0]; if(!file) return;
     const url = URL.createObjectURL(file);
 
-    // アップロードカードの直後に挿入
-    const uploadTile = galleryEl.querySelector('.upload-card');
+    // 生成
     const rec = createCard({id:'upload-'+Date.now(), url});
+
+    // アップロードタイルの直後に移動
+    const uploadTile = galleryEl.querySelector('.upload-card');
     galleryEl.insertBefore(rec.card, uploadTile.nextSibling);
-    if(selectedPerson){
-      setOverlayContent(rec.overlay, getFieldValues());
-      rec.overlay.classList.add('show');
-    }
+
     uploadEl.value = '';
   });
 
