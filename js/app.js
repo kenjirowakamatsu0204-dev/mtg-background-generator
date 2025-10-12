@@ -1,5 +1,5 @@
-/* app.js - SPA glue code */
 (async function(){
+  const userPanelEl = document.querySelector('.user-panel'); // 初期は hidden
   const galleryEl = document.getElementById('gallery');
   const suggestEl = document.getElementById('suggestList');
   const searchEl  = document.getElementById('searchInput');
@@ -14,22 +14,25 @@
   };
   const applyBtn = document.getElementById('applyBtn');
 
-  // Prevent multiline edits
+  // 単一行強制
   Object.values(fields).forEach(inp=>{
     inp.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); inp.blur(); }});
     inp.addEventListener('input', (e)=>{ e.target.value = e.target.value.replace(/[\r\n]+/g,' '); });
   });
 
-  // Load data
+  // データ取得（Drive/Sheets。モックでもOK）
   const [images, people] = await Promise.allSettled([
     GoogleAPI.listDriveImages(), GoogleAPI.fetchPeopleFromSheet()
   ]).then(([a,b])=>[a.value||[], b.value||[]]);
 
-  // In-memory state
-  let selectedPerson = null;
-  let imageCards = []; // {id, url, imgEl, overlayReady}
+  // カード管理用
+  /** @type {{id:string, imgEl:HTMLImageElement, overlay:HTMLElement, card:HTMLElement}[]} */
+  const cards = [];
 
-  // ------- Suggestions -------
+  let selectedPerson = null;
+  let hasShownPanel = false;
+
+  // ========= Suggestion =========
   function filterPeople(q){
     q = (q || '').trim().toLowerCase();
     if(!q) return [];
@@ -44,7 +47,7 @@
   function renderSuggest(items){
     suggestEl.innerHTML = '';
     if(items.length===0){ suggestEl.classList.remove('show'); return; }
-    items.forEach((p, i)=>{
+    items.forEach((p)=>{
       const li = document.createElement('li');
       li.className = 'suggest-item';
       li.setAttribute('role','option');
@@ -63,29 +66,21 @@
   let suggestTimer;
   searchEl.addEventListener('input', ()=>{
     clearTimeout(suggestTimer);
-    suggestTimer = setTimeout(()=>{
-      renderSuggest(filterPeople(searchEl.value));
-    }, 120);
+    suggestTimer = setTimeout(()=> renderSuggest(filterPeople(searchEl.value)), 120);
   });
   document.addEventListener('click', (e)=>{
     if(!suggestEl.contains(e.target) && e.target!==searchEl) suggestEl.classList.remove('show');
   });
+  // Enterで第一候補を選択
+  searchEl.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter'){
+      const items = filterPeople(searchEl.value);
+      if(items.length){ choosePerson(items[0]); suggestEl.classList.remove('show'); }
+      e.preventDefault();
+    }
+  });
 
-  // ------- Person selection -------
-  function choosePerson(p){
-    selectedPerson = p;
-    fields.company.value = p.company||'';
-    fields.jpName.value  = p.jpName ||'';
-    fields.enName.value  = p.enName ||'';
-    fields.title.value   = p.title  ||'';
-    fields.email.value   = p.email  ||'';
-    searchEl.value = p.jpName || p.enName || '';
-    // Re-render overlays on all cards
-    refreshAllCards();
-  }
-
-  document.getElementById('applyBtn').addEventListener('click', refreshAllCards);
-
+  // ========= Overlay Helpers =========
   function getFieldValues(){
     return {
       company: CanvasRenderer.ensureSingleLine(fields.company.value),
@@ -96,7 +91,57 @@
     };
   }
 
-  // ------- Gallery -------
+  function setOverlayContent(overlay, values){
+    overlay.innerHTML = `
+      <div class="ov-line company">${values.company || ''}</div>
+      <div class="ov-line jpName">${values.jpName || ''}</div>
+      <div class="ov-line enName">${values.enName || ''}</div>
+      <div class="ov-line title">${values.title || ''}</div>
+      <div class="ov-line email">${values.email || ''}</div>
+    `;
+  }
+
+  function showOverlays(values){
+    cards.forEach(({overlay})=>{
+      setOverlayContent(overlay, values);
+      overlay.classList.add('show');
+    });
+  }
+
+  function hideOverlays(){
+    cards.forEach(({overlay})=> overlay.classList.remove('show'));
+  }
+
+  // ========= Person selection =========
+  function choosePerson(p){
+    selectedPerson = p;
+
+    // 初回ヒット時にユーザーパネルを表示
+    if(!hasShownPanel){
+      userPanelEl.classList.remove('hidden');
+      hasShownPanel = true;
+    }
+
+    // 値を反映
+    fields.company.value = p.company||'';
+    fields.jpName.value  = p.jpName ||'';
+    fields.enName.value  = p.enName ||'';
+    fields.title.value   = p.title  ||'';
+    fields.email.value   = p.email  ||'';
+    searchEl.value = p.jpName || p.enName || '';
+
+    // プレビュー（各サムネ左上の半透明パネル）に反映
+    const values = getFieldValues();
+    showOverlays(values);
+  }
+
+  // 更新ボタンで編集値をプレビューに反映
+  applyBtn.addEventListener('click', ()=>{
+    if(!hasShownPanel) return;
+    showOverlays(getFieldValues());
+  });
+
+  // ========= Gallery =========
   function createCard({id, url}){
     const card = document.createElement('div');
     card.className = 'card';
@@ -107,50 +152,53 @@
     img.loading = 'lazy';
     img.src = url;
 
+    // preview overlay (左上)
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay'; // .show は選択時に付与
+
     // download button
     const dl = document.createElement('button');
     dl.className = 'dl';
     dl.title = 'ダウンロード';
     dl.innerHTML = `<svg class="icon"><use href="assets/icons.svg#download"></use></svg>`;
     dl.addEventListener('click', async ()=>{
+      // キャンバスに描画 → ダウンロード（canvasRendererは左上半透明ブロックを描画済み）
       const values = getFieldValues();
-      // render onto canvas then download
       await CanvasRenderer.renderToCanvas(img, values);
       const fname = (values.enName || 'MeetingBackground').replace(/[^\w.-]+/g,'_') + '_MeetingBackground.jpg';
       CanvasRenderer.downloadCanvas(fname);
     });
 
     card.appendChild(img);
+    card.appendChild(overlay);
     card.appendChild(dl);
     galleryEl.appendChild(card);
 
-    return { id, url, imgEl: img };
+    const record = { id, imgEl: img, overlay, card };
+    cards.push(record);
+    return record;
   }
 
-  function refreshAllCards(){
-    // No heavy work needed here; rendering happens at download time.
-    // But we could preview overlays by drawing onto <canvas> and setting card bg as dataURL (optional).
-  }
+  // 初期カード（Drive or Mock）
+  images.forEach((f)=> createCard({id:f.id, url:f.thumbUrl || f.fullUrl}));
 
-  // Initial cards from Drive (or mock)
-  images.forEach((f)=> imageCards.push(createCard({id:f.id, url:f.thumbUrl || f.fullUrl})));
-
-  // ------- Upload new background -------
+  // アップロード → 新規カード作成（選択済なら即オーバーレイ反映）
   galleryEl.querySelector('.upload-card').addEventListener('click', ()=> uploadEl.click());
-  uploadEl.addEventListener('change', async (ev)=>{
-    const file = ev.target.files?.[0];
-    if(!file) return;
+  uploadEl.addEventListener('change', (ev)=>{
+    const file = ev.target.files?.[0]; if(!file) return;
     const url = URL.createObjectURL(file);
-    imageCards.unshift(createCard({id:'upload-'+Date.now(), url}));
+
+    // アップロードカードの直後に挿入
+    const uploadTile = galleryEl.querySelector('.upload-card');
+    const rec = createCard({id:'upload-'+Date.now(), url});
+    galleryEl.insertBefore(rec.card, uploadTile.nextSibling);
+    if(selectedPerson){
+      setOverlayContent(rec.overlay, getFieldValues());
+      rec.overlay.classList.add('show');
+    }
     uploadEl.value = '';
   });
 
-  // ------- Demo: choose the first person automatically if exact typed ------
-  searchEl.addEventListener('keydown', (e)=>{
-    if(e.key==='Enter'){
-      const items = filterPeople(searchEl.value);
-      if(items.length){ choosePerson(items[0]); suggestEl.classList.remove('show'); }
-      e.preventDefault();
-    }
-  });
+  // 初期状態：パネルは非表示、オーバーレイも非表示のまま
+  hideOverlays();
 })();
