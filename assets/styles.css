@@ -44,15 +44,19 @@ body{
 
 .app-main{ max-width:1160px; margin:20px auto 80px; padding:0 20px; display:grid; grid-template-columns:360px 1fr; gap:22px }
 .user-panel{
-  background:var(--panel); color:#e6eaf1; border-radius:16px; padding:16px; position:sticky; top:92px;
-  box-shadow:var(--shadow);
+  background:var(--panel); color:#e6eaf1; border-radius:16px; padding:16px;
+  position:sticky; top:92px; box-shadow:var(--shadow);
 }
-.user-panel .row{ display:grid; grid-template-columns:120px 1fr; gap:10px; align-items:center; margin:10px 0 }
-.user-panel label{ color:#b6c2d2; font-size:13px }
-.user-panel input{
-  width:100%; padding:10px 12px; border-radius:12px; border:1px solid #273142; background:#0d1117; color:#f4f7fb;
+
+/* ラベルを無くしたので1カラムの縦積み */
+.user-panel .rows{ display:flex; flex-direction:column; gap:14px; margin-bottom:10px; }
+
+/* 共通フィールド外観（従来の input と同等） */
+.user-panel .field{
+  width:100%; padding:12px 14px; border-radius:12px; border:1px solid #273142;
+  background:#0d1117; color:#f4f7fb; font-size:16px;
 }
-.user-panel input:focus{ border-color:var(--accent); outline:3px solid rgba(37,99,235,.15) }
+.user-panel .field:focus{ border-color:var(--accent); outline:3px solid rgba(37,99,235,.15) }
 .btn.icon-btn{
   display:inline-flex; align-items:center; gap:8px; margin-top:4px;
   background:linear-gradient(180deg, #2b3342, #202635); color:#fff; border:1px solid #374151;
