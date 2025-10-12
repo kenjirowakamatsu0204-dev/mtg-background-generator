@@ -1,42 +1,15 @@
 (function(global){
   const CANVAS_W = 1920, CANVAS_H = 1080;
-  const PADDING = 80;
 
   function ensureSingleLine(str=''){
     return (str || '').replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
   }
 
-  /** 角丸矩形を描画 */
-  function roundRect(ctx, x, y, w, h, r){
-    const radius = Math.min(r, w/2, h/2);
-    ctx.beginPath();
-    ctx.moveTo(x+radius, y);
-    ctx.arcTo(x+w, y, x+w, y+h, radius);
-    ctx.arcTo(x+w, y+h, x, y+h, radius);
-    ctx.arcTo(x, y+h, x, y, radius);
-    ctx.arcTo(x, y, x+w, y, radius);
-    ctx.closePath();
-  }
-
-  function drawText(ctx, text, x, y, opts={}){
-    const {
-      font='28px "Noto Sans JP", system-ui, -apple-system, Meiryo, sans-serif',
-      color='#ffffff' /* ← キャンバスは白文字 */,
-      shadow=false     /* ← 文字影なし */
-    } = opts;
-    ctx.font = font;
-    ctx.fillStyle = color;
+  function drawText(ctx, text, x, y, font){
+    ctx.font = font;            // "weight size family"
+    ctx.fillStyle = '#ffffff';  // 白文字固定
     ctx.textBaseline = 'top';
-    if(shadow){
-      ctx.shadowColor = 'rgba(0,0,0,.18)';
-      ctx.shadowBlur = 4;
-      ctx.shadowOffsetY = 2;
-    } else {
-      ctx.shadowColor = 'transparent';
-      ctx.shadowBlur = 0;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
-    }
+    ctx.shadowColor = 'transparent'; // 影なし
     ctx.fillText(ensureSingleLine(text), x, y);
   }
 
@@ -55,37 +28,22 @@
     const dx = (CANVAS_W - dw)/2, dy = (CANVAS_H - dh)/2;
     ctx.drawImage(img, dx, dy, dw, dh);
 
-    // 左上インフォパネル：半透明の黒、境界はフェード（shadowBlur）
-    const panelX = PADDING - 20;
-    const panelY = PADDING - 20;
-    const panelW = 840;
-    const panelH = 260;
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.6)';     // 外側に黒のぼかし影で境界をフェード
-    ctx.shadowBlur  = 22;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';       // 本体は黒半透明
-    roundRect(ctx, panelX, panelY, panelW, panelH, 18);
-    ctx.fill();
-    ctx.restore();
+    // 左半分に黒のグラデーション（箱ではなく直接）
+    const grad = ctx.createLinearGradient(0, 0, CANVAS_W * 0.7, 0);
+    grad.addColorStop(0.00, 'rgba(0,0,0,0.60)');
+    grad.addColorStop(0.45, 'rgba(0,0,0,0.40)');
+    grad.addColorStop(0.70, 'rgba(0,0,0,0.00)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-    // テキスト（白、行間を詰める）
-    const x = PADDING;
-    let y = PADDING;
-    drawText(ctx, fields.company, x, y, {font:'500 30px "Noto Sans JP", system-ui, -apple-system, Meiryo, sans-serif'});
-    y += 40; // 行間コンパクト
+    // 文字（Noto Sans JP、行間は詰め気味）
+    const left = 80;
+    let y = 80;
+    const fam = '"Noto Sans JP", system-ui, -apple-system, Meiryo, sans-serif';
 
-    drawText(ctx, fields.jpName, x, y, {font:'700 34px "Noto Sans JP", system-ui, -apple-system, Meiryo, sans-serif'});
-    y += 40;
-
-    drawText(ctx, fields.enName, x, y, {font:'600 26px "Noto Sans JP", system-ui, -apple-system, Meiryo, sans-serif'});
-    y += 34;
-
-    drawText(ctx, fields.title,  x, y, {font:'500 24px "Noto Sans JP", system-ui, -apple-system, Meiryo, sans-serif'});
-    y += 30;
-
-    drawText(ctx, fields.email,  x, y, {font:'400 22px "Noto Sans JP", system-ui, -apple-system, Meiryo, sans-serif'});
+    drawText(ctx, fields.jpName,  left, y, `700 60px ${fam}`);   y += 68;
+    drawText(ctx, fields.company, left, y, `600 30px ${fam}`);   y += 40;
+    drawText(ctx, fields.title,   left, y, `500 26px ${fam}`);
 
     return canvas;
   }
