@@ -30,9 +30,9 @@ const GoogleAPI = (function(){
   async function fetchPeopleFromSheet(){
     // Replace with live Sheets API read; this is a demo set.
     return [
-      { jpName:'若松 研二朗', enName:'Kenjiro Wakamatsu', title:'PdM Consultant', email:'Kenjiro.Wakamatsu@pendo.io', company:'Pendo.io Japan 株式会社' },
-      { jpName:'渡辺 翼',   enName:'Tsubasa Watanabe',  title:'Solution Consultant', email:'tsubasa@example.com', company:'Pendo.io Japan 株式会社' },
-      { jpName:'山田 太郎', enName:'Taro Yamada',       title:'Sales Engineer', email:'taro@example.com', company:'Pendo.io Japan 株式会社' },
+      { jpName:'若松 太郎', enName:'Taro Wakamatsu', title:'PdM Consultant', email:'Taro.Wakamatsu@pendozer.com', company:'Pendozer 株式会社' },
+      { jpName:'渡辺 ゆうた',   enName:'Yuta Watanabe',  title:'Solution Consultant', email:'yuta.watanabe@example.com', company:'Pendozer Japan 株式会社' },
+      { jpName:'山田 太郎', enName:'Taro Yamada',       title:'Sales Engineer', email:'taro@example.com', company:'Pendozer 株式会社' },
     ];
   }
 
