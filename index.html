@@ -19,27 +19,14 @@
   <main class="app-main">
     <!-- Editable user panel -->
     <section class="user-panel" aria-label="ユーザー情報編集">
-      <div class="row">
-        <label>会社名</label>
-        <input id="companyField" type="text" maxlength="80" />
+      <div class="rows">
+        <input id="companyField" class="field" type="text" maxlength="80" aria-label="会社名" />
+        <input id="jpNameField"  class="field" type="text" maxlength="80" aria-label="氏名（日本語）" />
+        <input id="enNameField"  class="field" type="text" maxlength="80" aria-label="氏名（英語）" />
+        <input id="titleField"   class="field" type="text" maxlength="80" aria-label="役職" />
+        <input id="emailField"   class="field" type="email" maxlength="120" aria-label="メール" />
       </div>
-      <div class="row">
-        <label>氏名（日本語）</label>
-        <input id="jpNameField" type="text" maxlength="80" />
-      </div>
-      <div class="row">
-        <label>氏名（英語）</label>
-        <input id="enNameField" type="text" maxlength="80" />
-      </div>
-      <div class="row">
-        <label>役職</label>
-        <input id="titleField" type="text" maxlength="80" />
-      </div>
-      <div class="row">
-        <label>メール</label>
-        <input id="emailField" type="email" maxlength="120" />
-      </div>
-
+      
       <button id="applyBtn" class="btn icon-btn" title="画像に反映" aria-label="画像に反映">
         <svg class="icon"><use href="assets/icons.svg#refresh"></use></svg>
       </button>
