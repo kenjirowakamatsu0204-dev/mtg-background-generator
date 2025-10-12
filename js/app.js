@@ -23,7 +23,7 @@
     GoogleAPI.listDriveImages(), GoogleAPI.fetchPeopleFromSheet()
   ]).then(([a,b])=>[a.value||[], b.value||[]]);
 
-  /** @type {{id:string, imgEl:HTMLImageElement, overlay:HTMLElement, textWrap:HTMLElement, card:HTMLElement}[]} */
+  /** @type {{id:string, imgEl:HTMLImageElement, overlay:HTMLElement, textWrap:HTMLElement, hoverMask:HTMLElement, card:HTMLElement}[]} */
   const cards = [];
 
   let selectedPerson = null;
@@ -35,7 +35,7 @@
     if(!q) return [];
     const norm = s => (s||'').toLowerCase();
     return people
-      .map(p=>[p, [norm(p.jpName), norm(p.enName)].some(n=>n.includes(q))]) // enNameは内部検索用に残すだけ
+      .map(p=>[p, [norm(p.jpName), norm(p.enName)].some(n=>n.includes(q))])
       .filter(([_,ok])=>ok)
       .map(([p])=>p)
       .slice(0,8);
@@ -119,10 +119,19 @@
   }
   applyBtn.addEventListener('click', ()=>{ if(hasShownPanel) showOverlays(getFieldValues()); });
 
+  // ===== 共通DL関数 =====
+  async function triggerDownload(img){
+    const values = getFieldValues();
+    await CanvasRenderer.renderToCanvas(img, values);
+    CanvasRenderer.downloadCanvas('MeetingBackground.jpg');
+  }
+
   // ===== ギャラリー =====
   function createCard({id, url}){
     const card = document.createElement('div');
     card.className = 'card';
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0'); // キーボード操作可
 
     const img = document.createElement('img');
     img.alt = '背景'; img.loading = 'lazy'; img.src = url;
@@ -132,22 +141,26 @@
     const textWrap = document.createElement('div'); textWrap.className = 'ov-wrap';
     overlay.appendChild(textWrap);
 
-    const dl = document.createElement('button');
-    dl.className = 'dl'; dl.title = 'ダウンロード';
-    dl.innerHTML = `<svg class="icon"><use href="assets/icons.svg#download"></use></svg>`;
-    dl.addEventListener('click', async ()=>{
-      const values = getFieldValues();
-      await CanvasRenderer.renderToCanvas(img, values);
-      const fname = 'MeetingBackground.jpg'; // 英名/メールは廃止
-      CanvasRenderer.downloadCanvas(fname);
+    // ホバー表示用マスク（白半透明 + 中央DLアイコン）
+    const hoverMask = document.createElement('div');
+    hoverMask.className = 'hover-mask';
+    hoverMask.innerHTML = `<svg class="dl-icon"><use href="assets/icons.svg#download"></use></svg>`;
+
+    // クリック（カード全面）
+    const onDownload = ()=> triggerDownload(img);
+    card.addEventListener('click', onDownload);
+    card.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault(); onDownload();
+      }
     });
 
     card.appendChild(img);
     card.appendChild(overlay);
-    card.appendChild(dl);
+    card.appendChild(hoverMask);
     galleryEl.appendChild(card);
 
-    const rec = { id, imgEl: img, overlay, textWrap, card };
+    const rec = { id, imgEl: img, overlay, textWrap, hoverMask, card };
     cards.push(rec);
 
     // 既に選択済みなら即反映
