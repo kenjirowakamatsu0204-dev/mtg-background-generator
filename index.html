@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>会議背景メーカー</title>
 
-  <!-- Noto Sans JP を読み込み -->
+  <!-- Noto Sans JP -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/styles.css" />
@@ -21,14 +21,12 @@
   </header>
 
   <main class="app-main">
-    <!-- 初期は非表示。選択ヒットで表示 -->
-    <section class="user-panel hidden" aria-label="ユーザー情報編集" aria-hidden="true" style="display:none;">
+    <!-- 初期は非表示。最初の検索ヒットで表示 -->
+    <section class="user-panel hidden" aria-hidden="true" style="display:none;">
       <div class="rows">
         <input id="companyField" class="field" type="text" maxlength="80" aria-label="会社名" />
         <input id="jpNameField"  class="field" type="text" maxlength="80" aria-label="氏名（日本語）" />
-        <input id="enNameField"  class="field" type="text" maxlength="80" aria-label="氏名（英語）" />
         <input id="titleField"   class="field" type="text" maxlength="80" aria-label="役職" />
-        <input id="emailField"   class="field" type="email" maxlength="120" aria-label="メール" />
       </div>
       <button id="applyBtn" class="btn icon-btn btn-pendo" title="画像に反映" aria-label="画像に反映">
         <svg class="icon"><use href="assets/icons.svg#refresh"></use></svg>
