@@ -17,7 +17,7 @@
   </header>
 
   <main class="app-main">
-    <!-- Editable user panel -->
+    <!-- 値のみを編集するパネル（ラベルなし） -->
     <section class="user-panel" aria-label="ユーザー情報編集">
       <div class="rows">
         <input id="companyField" class="field" type="text" maxlength="80" aria-label="会社名" />
@@ -26,15 +26,13 @@
         <input id="titleField"   class="field" type="text" maxlength="80" aria-label="役職" />
         <input id="emailField"   class="field" type="email" maxlength="120" aria-label="メール" />
       </div>
-      
-      <button id="applyBtn" class="btn icon-btn" title="画像に反映" aria-label="画像に反映">
+      <button id="applyBtn" class="btn icon-btn btn-pendo" title="画像に反映" aria-label="画像に反映">
         <svg class="icon"><use href="assets/icons.svg#refresh"></use></svg>
       </button>
     </section>
 
-    <!-- Background gallery -->
+    <!-- ギャラリー -->
     <section class="gallery" aria-label="背景ギャラリー" id="gallery">
-      <!-- Upload tile -->
       <label class="card upload-card" title="新しい背景をアップロード">
         <input id="uploadInput" type="file" accept="image/*" hidden />
         <div class="upload-inner">
@@ -42,14 +40,14 @@
           <span>Upload</span>
         </div>
       </label>
-      <!-- Cards are injected here -->
+      <!-- 画像カードはJSで注入 -->
     </section>
 
-    <!-- Hidden canvas for rendering -->
+    <!-- レンダリング用キャンバス -->
     <canvas id="renderCanvas" class="hidden" width="1920" height="1080"></canvas>
   </main>
 
-  <!-- Google APIs (optional; only needed if you configure drive/sheets live access) -->
+  <!-- Drive/Sheets 直結時に有効化 -->
   <!-- <script src="https://apis.google.com/js/api.js"></script> -->
 
   <script src="js/canvasRenderer.js"></script>
