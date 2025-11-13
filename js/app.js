@@ -104,6 +104,11 @@
       userPanelEl.style.display = '';
       userPanelEl.setAttribute('aria-hidden','false');
       hasShownPanel = true;
+      //PendoにLocationAPIでURLを送信
+      if (window.pendo?.location?.setUrl) {
+      pendo.location.setUrl(
+        `${location.origin}/mtg-background-generator/userPanel`
+      );
     }
   }
   function choosePerson(p){
