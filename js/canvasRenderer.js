@@ -13,7 +13,24 @@
     ctx.fillText(ensureSingleLine(text), x, y);
   }
 
-  async function renderToCanvas(img, fields){
+  async function loadPendoLogo(){
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      // SVGをDataURLとして読み込む
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+        <rect width="100" height="100" fill="#F94877"/>
+        <!-- 右斜め上を指す矢印のような形状 -->
+        <path d="M25 70 L25 50 L40 35 L55 35 L55 40 L45 40 L45 50 L60 50 L60 55 L45 55 L45 65 L70 65 L70 70 Z" fill="white"/>
+      </svg>`;
+      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      img.src = url;
+    });
+  }
+
+  async function renderToCanvas(img, fields, showLogo = false){
     const canvas = document.getElementById('renderCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -42,7 +59,22 @@
     const fam = '"Noto Sans JP", system-ui, -apple-system, Meiryo, sans-serif';
 
     drawText(ctx, fields.jpName,  left, y, `700 60px ${fam}`);   y += 68;
-    drawText(ctx, fields.company, left, y, `600 30px ${fam}`);   y += 40;
+    
+    // 会社名を描画
+    drawText(ctx, fields.company, left, y, `600 30px ${fam}`);
+    
+    // ロゴを描画（会社名の右横）
+    if(showLogo){
+      const logoImg = await loadPendoLogo();
+      const logoSize = 40; // ロゴのサイズ（ピクセル）
+      const companyWidth = ctx.measureText(ensureSingleLine(fields.company)).width;
+      const logoX = left + companyWidth + 16; // 会社名の右に16pxの間隔
+      // 会社名のフォントサイズは30pxなので、ロゴを中央揃えにするために調整
+      const logoY = y + (30 - logoSize) / 2; // 会社名の中央に配置
+      ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+    }
+    
+    y += 40;
     drawText(ctx, fields.title,   left, y, `500 26px ${fam}`);
 
     return canvas;

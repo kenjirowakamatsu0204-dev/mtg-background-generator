@@ -26,4 +26,11 @@
     <polyline points="7 10 12 15 17 10"></polyline>
     <line x1="12" y1="15" x2="12" y2="3"></line>
   </symbol>
+
+  <!-- Pendo Logo -->
+  <symbol id="pendo-logo" viewBox="0 0 100 100" fill="none">
+    <rect width="100" height="100" fill="#F94877"/>
+    <!-- 右斜め上を指す矢印のような形状 -->
+    <path d="M25 70 L25 50 L40 35 L55 35 L55 40 L45 40 L45 50 L60 50 L60 55 L45 55 L45 65 L70 65 L70 70 Z" fill="white"/>
+  </symbol>
 </svg>

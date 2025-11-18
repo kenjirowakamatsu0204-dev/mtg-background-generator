@@ -11,6 +11,7 @@
     title:   document.getElementById('titleField')
   };
   const applyBtn = document.getElementById('applyBtn');
+  const pendoLogoToggle = document.getElementById('pendoLogoToggle');
 
   // 単一行強制
   Object.values(fields).forEach(inp=>{
@@ -83,9 +84,11 @@
     };
   }
   function setOverlayContent(textWrap, values){
+    const showLogo = pendoLogoToggle.checked;
+    const logoHtml = showLogo ? '<svg class="pendo-logo show"><use href="assets/icons.svg#pendo-logo"></use></svg>' : '<svg class="pendo-logo"><use href="assets/icons.svg#pendo-logo"></use></svg>';
     textWrap.innerHTML = `
       <div class="ov-line jpName" >${values.jpName  || ''}</div>
-      <div class="ov-line company">${values.company || ''}</div>
+      <div class="ov-line company">${values.company || ''}${logoHtml}</div>
       <div class="ov-line title"  >${values.title   || ''}</div>
     `;
   }
@@ -124,11 +127,15 @@
     showOverlays(getFieldValues());
   }
   applyBtn.addEventListener('click', ()=>{ if(hasShownPanel) showOverlays(getFieldValues()); });
+  pendoLogoToggle.addEventListener('change', ()=>{ 
+    if(selectedPerson || hasShownPanel) showOverlays(getFieldValues()); 
+  });
 
   // ===== 共通DL関数 =====
   async function triggerDownload(img){
     const values = getFieldValues();
-    await CanvasRenderer.renderToCanvas(img, values);
+    const showLogo = pendoLogoToggle.checked;
+    await CanvasRenderer.renderToCanvas(img, values, showLogo);
     CanvasRenderer.downloadCanvas('MeetingBackground.jpg');
   }
 

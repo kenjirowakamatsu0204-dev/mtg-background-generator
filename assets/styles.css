@@ -17,9 +17,10 @@ body{
 .app-header{
   position:sticky; top:0; z-index:20; backdrop-filter:saturate(150%) blur(6px);
   background:rgba(246,247,251,.85); padding:16px 24px; border-bottom:1px solid #eaeef4;
+  display:flex; align-items:center; gap:16px; max-width:1160px; margin:0 auto;
 }
 .search-wrap{
-  max-width:980px; margin:auto; display:flex; align-items:center; gap:12px;
+  flex:1; display:flex; align-items:center; gap:12px; position:relative;
   background:#fff; border:1.5px solid #e5eaf1; border-radius:14px; padding:10px 14px;
   box-shadow: var(--shadow);
 }
@@ -27,10 +28,42 @@ body{
 .search-wrap .icon{ width:18px; height:18px; color:#64748b }
 #searchInput{ flex:1; border:none; outline:none; font-size:18px; padding:6px 2px; min-width:0 }
 
+/* ===== Toggle Switch ===== */
+.toggle-wrap{
+  display:flex; align-items:center; gap:10px; cursor:pointer;
+  user-select:none; white-space:nowrap;
+}
+.toggle-wrap input[type="checkbox"]{
+  appearance:none; width:44px; height:24px; border-radius:12px;
+  background:#cbd5e1; position:relative; cursor:pointer;
+  transition:background .2s ease; outline:none;
+}
+.toggle-wrap input[type="checkbox"]:checked{
+  background:var(--pendo-pink);
+}
+.toggle-wrap input[type="checkbox"]::before{
+  content:""; position:absolute; width:20px; height:20px;
+  border-radius:50%; background:#fff; top:2px; left:2px;
+  transition:transform .2s ease; box-shadow:0 2px 4px rgba(0,0,0,.2);
+}
+.toggle-wrap input[type="checkbox"]:checked::before{
+  transform:translateX(20px);
+}
+.toggle-wrap input[type="checkbox"]:focus-visible{
+  box-shadow:0 0 0 3px rgba(249,72,119,.18);
+}
+.toggle-label{
+  font-size:14px; font-weight:500; color:var(--ink);
+}
+@media (max-width:640px){
+  .app-header{ flex-direction:column; align-items:stretch; }
+  .toggle-wrap{ justify-content:center; }
+}
+
 .suggest-list{
-  position:absolute; top:64px; left:50%; transform:translateX(-50%); width:min(960px, calc(100% - 48px));
+  position:absolute; top:calc(100% + 8px); left:0; right:0;
   background:#fff; border:1px solid #e5eaf1; border-radius:12px; margin:0; padding:6px; list-style:none;
-  box-shadow:var(--shadow); display:none;
+  box-shadow:var(--shadow); display:none; z-index:10;
 }
 .suggest-list.show{ display:block }
 .suggest-item{ padding:10px 12px; display:flex; gap:12px; align-items:center; border-radius:10px; cursor:pointer }
@@ -90,9 +123,11 @@ body{
 }
 .card .ov-wrap{ position:absolute; left:24px; top:24px; right:24px; color:#fff; }
 .card .ov-line{ font-size:14px; line-height:1.2; margin:0 0 6px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:none; }
-.card .company{ font-weight:600; font-size:16px; margin-bottom:10px; }
+.card .company{ font-weight:600; font-size:16px; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
 .card .jpName{ font-weight:700; font-size:28px; margin-bottom:8px; }
 .card .title  { font-weight:500; font-size:14px; opacity:.95; }
+.card .pendo-logo{ width:32px; height:32px; flex-shrink:0; display:none; }
+.card .pendo-logo.show{ display:block; }
 
 /* ==== 新: ホバー時のDL表現 ==== */
 .card .hover-mask{
