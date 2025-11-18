@@ -137,6 +137,17 @@
     const showLogo = pendoLogoToggle.checked;
     await CanvasRenderer.renderToCanvas(img, values, showLogo);
     CanvasRenderer.downloadCanvas('MeetingBackground.jpg');
+
+    // ダウンロード成功後にAPIでPendonにTrackEventを送信
+    if (window.pendo?.track) {
+      pendo.track('Background Downloaded', {
+        event: 'download',
+        company: values.company,
+        jpName: values.jpName,
+        title: values.title,
+        hasLogo: showLogo
+      });
+    }
   }
 
   // ===== ギャラリー =====
