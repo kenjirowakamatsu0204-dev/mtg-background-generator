@@ -12,11 +12,20 @@
         y=e.createElement(n);y.async=!0;y.src='https://cdn.pendo.io/agent/static/'+apiKey+'/pendo.js';
         z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
 
+        // Visitorをランダムに生成（5つの組み合わせから選択）
+        const visitorsList = [
+            { id: "KenWaka@pendoooo.io", role: "PdM" },
+            { id: "HiroMasuda@pendoooo.io", role: "Consultant" },
+            { id: "YukiWatanabe@pendoooo.io", role: "Solution Consultant" },
+            { id: "TaroYamada@pendoooo.io", role: "Sales Engineer" },
+            { id: "IchiroTanaka@pendoooo.io", role: "Software Engineer" }
+        ];
+        const randomVisitor = visitorsList[Math.floor(Math.random() * visitorsList.length)];
 
         pendo.initialize({
             visitor: {
-                id:"KenWaka@pendoooo.io",
-                role:"PdM"
+                id: randomVisitor.id,
+                role: randomVisitor.role
                 },
             account: {
                 id:"pendo.io japan",
