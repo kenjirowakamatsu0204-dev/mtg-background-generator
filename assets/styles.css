@@ -9,7 +9,7 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; background:#f6f7fb; color:var(--ink);
+  margin:0; background:#f6f7fb; color:var(--ink); padding-bottom:120px;
   font:16px/1.45 "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
 }
 
@@ -162,3 +162,20 @@ body{
 
 /* Utility */
 .hidden{ display:none }
+
+.app-footer{
+  position:fixed; bottom:16px; left:0; right:0;
+  display:flex; justify-content:center; padding:0 20px;
+  pointer-events:none; z-index:30;
+}
+.promo-btn{
+  pointer-events:auto;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:12px 32px; border-radius:999px;
+  background:var(--pendo-pink); color:#fff; font-weight:600; text-decoration:none;
+  box-shadow:0 8px 16px rgba(249,72,119,.25);
+  transition:transform .05s ease, filter .2s ease, box-shadow .2s ease;
+}
+.promo-btn:hover{ filter:brightness(1.05); box-shadow:0 10px 22px rgba(249,72,119,.35); }
+.promo-btn:active{ transform:translateY(1px); }
+.promo-btn:focus-visible{ outline:3px solid rgba(249,72,119,.3); outline-offset:4px; }
