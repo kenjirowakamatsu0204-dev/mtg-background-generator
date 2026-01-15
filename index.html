@@ -22,13 +22,20 @@
         ];
         const randomVisitor = visitorsList[Math.floor(Math.random() * visitorsList.length)];
 
+        // Account IDを日本語でテスト（5つの組み合わせから選択）
+        const accountIdList = [
+            "ペンドー・ジャパン",
+            "ペンドー・テクノロジーズ"
+        ];
+        const randomAccountId = accountIdList[Math.floor(Math.random() * accountIdList.length)];
+
         pendo.initialize({
             visitor: {
                 id: randomVisitor.id,
                 role: randomVisitor.role
                 },
             account: {
-                id:"pendo.io japan",
+                id: randomAccountId,
                 plan:"standard",
                 industry:"Tech"
             }
@@ -54,7 +61,7 @@
       <ul id="suggestList" class="suggest-list" role="listbox" aria-label="候補"></ul>
     </div>
     <label class="toggle-wrap">
-      <input type="checkbox" id="pendoLogoToggle" />
+      <input type="checkbox" id="pendoLogoToggle" />え
       <span class="toggle-label">Insert Pendo Logo</span>
     </label>
   </header>
