@@ -32,12 +32,15 @@
         pendo.initialize({
             visitor: {
                 id: randomVisitor.id,
-                role: randomVisitor.role
+                role: randomVisitor.role,
+                arrayTest: ["test1", "test2", "test3"],
+                arrayTest2:[],
+                arrayTest3: null
                 },
             account: {
                 id: randomAccountId,
                 plan:"standard",
-                industry:"Tech"
+                industry:"Tech",
             }
         });
 })('cd4b2764-a454-4105-ba41-66fc4369da96');
