@@ -4,7 +4,7 @@
   function ensureSingleLine(str=''){
     return (str || '').replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
   }
-
+  //20260519 git auth test
   function drawText(ctx, text, x, y, font){
     ctx.font = font;            // "weight size family"
     ctx.fillStyle = '#ffffff';  // 白文字固定
